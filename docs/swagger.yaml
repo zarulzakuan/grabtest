@@ -1,0 +1,15 @@
+basePath: /
+host: localhost:8084
+info:
+  contact:
+    email: zarulzakuan@gmail.com
+    name: Zarul Zakuan
+  description: Main service
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Ipay88 Payment Gateway Client API
+  version: "1.0"
+paths: {}
+swagger: "2.0"
