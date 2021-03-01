@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <!-- Required meta tags always come first -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+
+
+
+
+
+
+    <!-- Standard Header Info -->
+    <title>Grab Employee Record</title>
+
+
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,600,700,800&display=swap" rel="stylesheet">
+
+    <style>
+        .custom-grades {
+            width: 70px;
+            text-align: center;
+            font-size: 11px;
+            margin: 10px;
+        }
+
+        td:first-child {
+            font-weight: bold !important;
+        }
+    </style>
+
+
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.css" />
+</head>
+
+<body>
+
+    <div id="firebaseui-auth-container"></div>
+    <script>
+        var firebaseConfig = {
+            apiKey: "AIzaSyCaUioWzhgjKbTj9nFEhtmaN4KbRXxotbk",
+            authDomain: "grabtest-828e6.firebaseapp.com",
+            projectId: "grabtest-828e6",
+            storageBucket: "grabtest-828e6.appspot.com",
+            messagingSenderId: "1050687107203",
+            appId: "1:1050687107203:web:bd2a510b1266299e922bb6"
+        };
+
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        const auth = firebase.auth();
+
+        var ui = new firebaseui.auth.AuthUI(firebase.auth());
+
+
+        var uiConfig = {
+            callbacks: {
+                signInSuccessWithAuthResult: function (authResult, redirectUrl) {
+                    // User successfully signed in.
+                    // Return type determines whether we continue the redirect automatically
+                    // or whether we leave that to developer to handle.
+                    
+                    console.log("logged in");
+                    
+                    return true;
+                },
+                uiShown: function () {
+                    // The widget is rendered.
+                    // Hide the loader.
+                    //document.getElementById('loader').style.display = 'none';
+                }
+            },
+            credentialHelper: firebaseui.auth.CredentialHelper.NONE,
+            signInFlow: 'redirect',
+            signInSuccessUrl: 'http://localhost:8080/employees',
+            signInOptions: [
+                firebase.auth.EmailAuthProvider.PROVIDER_ID,
+            ],
+        };
+
+        ui.start('#firebaseui-auth-container', uiConfig);
+
+
+        auth.onAuthStateChanged(function (user) {
+            if (user) {
+
+                var email = user.email;
+                user.getIdToken().then(function (token) {
+                    localStorage.setItem("token", token);
+                    axios.get('/log/api/in', { 'headers': { 'Authorization': 'Bearer ' + token } });
+                });
+
+                console.log("User In")
+                
+                window.location.href = "/employees";
+
+
+            } else {
+                console.log("User Out")
+                localStorage.removeItem("token");
+            }
+
+
+
+        });
+
+    </script>
+
+
+</body>
+
+</html>

@@ -1,5 +1,44 @@
 basePath: /
-host: localhost:8084
+definitions:
+  main.Employee:
+    properties:
+      dob:
+        type: string
+      jobtitle:
+        type: string
+      name:
+        type: string
+      salary:
+        type: string
+      searchkeys:
+        items:
+          type: string
+        type: array
+    type: object
+  main.HTTPResponse:
+    properties:
+      data:
+        type: object
+      status:
+        description: success, fail, error
+        type: string
+    type: object
+  main.Job:
+    properties:
+      description:
+        type: string
+      salarymax:
+        type: string
+      salarymin:
+        type: string
+      searchkeys:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+    type: object
+host: localhost:8080
 info:
   contact:
     email: zarulzakuan@gmail.com
@@ -9,7 +48,193 @@ info:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   termsOfService: http://swagger.io/terms/
-  title: Ipay88 Payment Gateway Client API
+  title: Grab Assessment
   version: "1.0"
-paths: {}
+paths:
+  /employee/api:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.HTTPResponse'
+      summary: List all employee
+      tags:
+      - employee
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: The input Employee struct
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/main.Employee'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.HTTPResponse'
+      summary: Create new employee
+      tags:
+      - employee
+  /employee/api/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Employee ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.HTTPResponse'
+      summary: Delete employee
+      tags:
+      - employee
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Employee ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.HTTPResponse'
+      summary: Update employee
+      tags:
+      - employee
+  /employee/api/search/{searchstring}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Search string
+        in: path
+        name: searchstring
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.HTTPResponse'
+      summary: Find employee
+      tags:
+      - employee
+  /job/api:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.HTTPResponse'
+      summary: List all job
+      tags:
+      - job
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: The input Job struct
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/main.Job'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.HTTPResponse'
+      summary: Create new job
+      tags:
+      - job
+  /job/api/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Job ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.HTTPResponse'
+      summary: Delete job
+      tags:
+      - job
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Job ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.HTTPResponse'
+      summary: Update job
+      tags:
+      - job
+  /job/api/search/{searchstring}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Search string
+        in: path
+        name: searchstring
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.HTTPResponse'
+      summary: Find job
+      tags:
+      - job
 swagger: "2.0"

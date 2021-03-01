@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Welcome!</title>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-auth.js"></script>
+    <script src="../assets/zinggrid.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <script src="../assets/common.js"></script>
+    <style>
+        body {
+            background: #e6e6e6;
+        }
+
+        zing-grid {
+            --zg-row-body-background_hover: #F6EB61;
+        }
+
+        zing-grid[loading] {
+            height: 421px;
+        }
+
+        zg-load-mask {
+            /* set the color to match the gif */
+            opacity: .95;
+            top: 65px;
+            height: calc(100% - 65px);
+            /* custom gif for loading */
+            /* background-image: url('./assets/img/refill_medicine_loader.gif'); */
+            /* Center and scale the image nicely */
+            background-position: center;
+            background-repeat: repeat-x;
+            background-size: contain;
+        }
+
+
+
+        .tabletitle img {
+            float: left;
+        }
+
+        .tabletitle h1 {
+            position: relative;
+            top: 18px;
+            left: 10px;
+        }
+
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333;
+        }
+
+        li {
+            float: left;
+        }
+        li:last-child { 
+            background-color: #e43b3b;
+            float:right; 
+        }
+        li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        li a:hover:not(.active) {
+            background-color: #111;
+        }
+
+        .active {
+            background-color: #4CAF50;
+        }
+    </style>
+</head>
+
+<body>
+    <ul>
+        <li><a href="../employees">Employees</a></li>
+        <li><a class="active" href="../jobs">Jobs</a></li>
+        <li><a href="../reports">Reports</a></li>
+        <li><a href="../log">Logs</a></li>
+        <li><a href="#" onclick="signOut()">Logout</a></li>
+    </ul>
+
+    <zing-grid compact="" zebra="" editor="modal" sort editor-controls search pager page-size="50" viewport="desktop"
+        theme="android" column-resizable>
+        <zg-data>
+            <zg-param name="src" value="/job/api"></zg-param>
+            <zg-param name="recordPath" value="data"></zg-param>
+            <zg-param name="headers" value=""></zg-param>
+        </zg-data>
+        <zg-caption>
+            <div class="tabletitle">
+                <!-- <img src="./assets/img/mf_icon.png" width="100px"> -->
+                <h1> All Jobs</h1>
+            </div>
+        </zg-caption>
+        <zg-colgroup>
+            <zg-column index="title" width="150px" header="Title" ></zg-column>
+            <zg-column index="description" header="Description"></zg-column>
+            <zg-column index="salarymin" header="Salary (Min)"></zg-column>
+            <zg-column index="salarymax" header="Salary (Max)"></zg-column>
+        </zg-colgroup>
+    </zing-grid>
+
+    <script>
+        const zgRef = document.querySelector('zing-grid');
+
+        zgRef.executeOnLoad(() => {
+            document.getElementsByName("headers")[0].value = '{"Authorization": "Bearer '+ localStorage.getItem("token") +'"}';
+            axios.get('/log/api/visit/jobs', { 'headers': { 'Authorization': 'Bearer ' + localStorage.getItem("token") } });
+        });
+    </script>
+</body>
+
+</html>

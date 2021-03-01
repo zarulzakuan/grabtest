@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Welcome!</title>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-auth.js"></script>
+    <script src="../assets/zinggrid.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <script src="../assets/common.js"></script>
+    <style>
+        body {
+            background: #e6e6e6;
+        }
+
+        zing-grid {
+            --zg-row-body-background_hover: #F6EB61;
+        }
+
+        zing-grid[loading] {
+            height: 421px;
+        }
+
+        zg-load-mask {
+            /* set the color to match the gif */
+            opacity: .95;
+            top: 65px;
+            height: calc(100% - 65px);
+            /* custom gif for loading */
+            /* background-image: url('./assets/img/refill_medicine_loader.gif'); */
+            /* Center and scale the image nicely */
+            background-position: center;
+            background-repeat: repeat-x;
+            background-size: contain;
+        }
+
+
+
+        .tabletitle img {
+            float: left;
+        }
+
+        .tabletitle h1 {
+            position: relative;
+            top: 18px;
+            left: 10px;
+        }
+
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333;
+        }
+
+        li {
+            float: left;
+        }
+
+        li:last-child {
+            background-color: #e43b3b;
+            float: right;
+        }
+
+        li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        li a:hover:not(.active) {
+            background-color: #111;
+        }
+
+        .active {
+            background-color: #4CAF50;
+        }
+    </style>
+</head>
+
+<body>
+    <ul>
+        <li><a href="../employees">Employees</a></li>
+        <li><a href="../jobs">Jobs</a></li>
+        <li><a class="active" href="../reports">Reports</a></li>
+        <li><a href="../log">Logs</a></li>
+        <li><a href="#" onclick="signOut()">Logout</a></li>
+    </ul>
+    
+    <a href="https://docs.google.com/spreadsheets/d/19-8NIC6JG60FfQSIbCIQa-829tU58riPgEkD8V1Wd2Y/edit?usp=sharing" target="_blank">Employees</a><br>
+    <a href="https://docs.google.com/spreadsheets/d/1EtswuECS6lHWx7bHP9R_yuL52USMV4fixKi5OLGcXAA/edit?usp=sharing" target="_blank">Jobs</a><br>
+    <a href="https://docs.google.com/spreadsheets/d/1MSgfdwl7wuvyetpF8ajNTtbBDtE3BphnWLbrvvW08Zo/edit?usp=sharing" target="_blank">Logs</a>
+
+</body>
+
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Welcome!</title>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-auth.js"></script>
+    <script src="../assets/zinggrid.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <script src="../assets/common.js"></script>
+    <style>
+        body {
+            background: #e6e6e6;
+        }
+
+        zing-grid {
+            --zg-row-body-background_hover: #F6EB61;
+        }
+
+        zing-grid[loading] {
+            height: 421px;
+        }
+
+        zg-load-mask {
+            /* set the color to match the gif */
+            opacity: .95;
+            top: 65px;
+            height: calc(100% - 65px);
+            background-position: center;
+            background-repeat: repeat-x;
+            background-size: contain;
+        }
+
+
+
+        .tabletitle img {
+            float: left;
+        }
+
+        .tabletitle h1 {
+            position: relative;
+            top: 18px;
+            left: 10px;
+        }
+
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333;
+        }
+
+        li {
+            float: left;
+        }
+        li:last-child { 
+            background-color: #e43b3b;
+            float:right; 
+         }
+        li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        li a:hover:not(.active) {
+            background-color: #111;
+        }
+
+        .active {
+            background-color: #4CAF50;
+        }
+    </style>
+</head>
+
+<body>
+    <ul>
+        <li><a class="active" href="../employees">Employees</a></li>
+        <li><a href="../jobs">Jobs</a></li>
+        <li><a href="../reports">Reports</a></li>
+        <li><a href="../log">Logs</a></li>
+        <li><a href="#" onclick="signOut()">Logout</a></li>
+    </ul>
+
+    <zing-grid compact="" zebra="" editor="modal" sort editor-controls search pager page-size="50" viewport="desktop"
+        theme="android" column-resizable>
+        <zg-data src="/employee/api">
+            <zg-param name="headers" value=''></zg-param>
+            <zg-param name="recordPath" value="data"></zg-param>
+        </zg-data>
+        <zg-caption>
+            <div class="tabletitle">
+                <!-- <img src="./assets/img/mf_icon.png" width="100px"> -->
+                <h1> All Employees</h1>
+            </div>
+        </zg-caption>
+        <zg-colgroup>
+            <zg-column index="name" header="Name"></zg-column>
+            <zg-column id="jobtitle_select" index="jobtitle" width="150px" header="Job Title" type="select"></zg-column>
+
+            <zg-column index="dob" header="Date of Birth"></zg-column>
+            <zg-column index="salary" header="Salary"></zg-column>
+        </zg-colgroup>
+    </zing-grid>
+    <script>
+
+        
+
+        axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem("token")
+        const getTodos = async () => {
+            try {
+                const res = await axios.get('/job/api');
+                const jobProfiles = res.data.data;
+
+                let jobTitles = [];
+                for (var k in jobProfiles) {
+                    // console.log(jobProfiles[k].title)
+                    jobTitles.push(jobProfiles[k].title);
+                }
+                document.getElementById('jobtitle_select').setAttribute('type-select-options', jobTitles.join(','));
+            } catch (e) {
+                console.error(e);
+            }
+        };
+
+        const zgRef = document.querySelector('zing-grid');
+        zgRef.addEventListener('grid:ready', function (e) {
+            getTodos();
+            //
+        });
+
+        zgRef.executeOnLoad(() => {
+            document.getElementsByName("headers")[0].value = '{"Authorization": "Bearer ' + localStorage.getItem("token") + '"}';
+            axios.get('/log/api/visit/employees', { 'headers': { 'Authorization': 'Bearer ' + localStorage.getItem("token") } });
+        });
+
+
+
+
+    </script>
+</body>
+
+</html>

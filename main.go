@@ -7,14 +7,13 @@ import (
 	"os"
 	"time"
 
+	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/zarulzakuan/grabtest/docs"
 )
 
-// @title Ipay88 Payment Gateway Client API
+// @title Grab Assessment
 // @version 1.0
 // @description Main service
 // @termsOfService http://swagger.io/terms/
@@ -22,7 +21,7 @@ import (
 // @contact.email zarulzakuan@gmail.com
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
-// @host localhost:8084
+// @host localhost:8080
 // @BasePath /
 
 const firebasePermissionFile = "./foresight-774f4-firebase-adminsdk-2p3wz-cf4c7c749a.json"
@@ -45,44 +44,10 @@ func init() {
 	}
 
 	var exists bool
-	ipay88ReqURL, exists = os.LookupEnv("IPAY88_OPSG_REQUEST_URL")
-
-	if !exists || ipay88ReqURL == "" {
-		log.Fatal("Environment Path not set")
-		os.Exit(1)
-	}
-
-	backendURL, exists = os.LookupEnv("BACKEND_URL")
-
-	if !exists || backendURL == "" {
-		log.Fatal("Environment Path not set")
-		os.Exit(1)
-	}
-
-	responseURL, exists = os.LookupEnv("RESPONSE_URL")
-
-	if !exists || responseURL == "" {
-		log.Fatal("Environment Path not set")
-		os.Exit(1)
-	}
 
 	appPort, exists = os.LookupEnv("APP_PORT")
 
 	if !exists || appPort == "" {
-		log.Fatal("Environment Path not set")
-		os.Exit(1)
-	}
-
-	merchantKey, exists = os.LookupEnv("MERCHANT_KEY")
-
-	if !exists || merchantKey == "" {
-		log.Fatal("Environment Path not set")
-		os.Exit(1)
-	}
-
-	merchantCode, exists = os.LookupEnv("MERCHANT_KEY")
-
-	if !exists || merchantCode == "" {
 		log.Fatal("Environment Path not set")
 		os.Exit(1)
 	}
@@ -104,10 +69,21 @@ func main() {
 
 	log.Println("Running...")
 
+	//connect database
+	router.Use(dbInit())
+
+	// load html files
+	router.LoadHTMLGlob("static/*")
+
+	PublicRoutes(router)
+	router.Use(static.Serve("/assets", static.LocalFile("./static", false)))
+
+	router.Use(authenticate())
+	ProtectedRoutes(router)
+
 	router.Use(setCORS())
-	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 	// router.Use(authenticate())
-	NewRoutes(router)
 
 	s := &http.Server{
 		Addr:           fmt.Sprintf(":%v", appPort),

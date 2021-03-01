@@ -1,0 +1,130 @@
+<html>
+
+<head>
+
+    <title> How to create crud operations(Insert,Update and Delete) in vue js </title>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+
+    <script>
+
+        $(document).ready(function () {
+            var app = new Vue({
+                el: '#App',
+                data: {
+                    search: '',
+                    name: '',
+                    dob: '',
+                    jobtitle: 'Select',
+                    salary: '',
+                    fullData: [],
+                    Editmode: true,
+                    updatemode: false,
+                    btnMode: "Submit",
+                    Validate: 0,
+                    id: 1
+                },
+                methods: {
+                    btnSubmit: function () {
+                        this.fullData.push({
+
+                            name: this.name,
+                            jobtitle: this.jobtitle,
+                            salary: this.salary,
+                            dob: this.dob
+                        })
+                        if (this.btnMode == "Update") {
+                            this.btnMode = "Submit";
+                        }
+                        this.name = '';
+                        this.emailid = '';
+                        this.role = 'Select';
+                    },
+
+                    OnEdit: function (d) {
+                        let fitdata = (this.fullData).filter(function (val) { return val.id == d });
+                        this.name = fitdata[0].name;
+                        this.dob = fitdata[0].dob;
+                        this.jobtitle = fitdata[0].jobtitle;
+                        this.salary = fitdata[0].salary;
+                        this.btnMode = "Update";
+                        this.fullData = (this.fullData).filter(function (val) {
+                            return val.id != d
+                        });
+                    },
+
+                    OnDelete: function (d) {
+                        this.fullData = (this.fullData).filter(function (val) {
+                            return val.id != d
+                        });
+                    }
+                },
+                mounted() {
+                    axios
+                        .get('/employee/list')
+                        .then(response => (
+                            this.fullData = response.data.data,
+                            console.log(response.data.data)
+                        ))
+                },
+                computed: {
+                    filteredList() {
+                        return this.fullData.filter(post => {
+                            return post.name.toLowerCase().includes(this.search.toLowerCase())
+                        })
+                    }
+                }
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <form id="form1">
+        <div id="App">
+            <table class="table table-bordered">
+                <tr>
+                    <th style="display:none;">ID</th>
+                    <th>Name</th>
+                    <th>Job Title</th>
+                    <th>DOB</th>
+                    <th>Salary</th>
+                </tr>
+                <input type="text" placeholder="Search" v-model="search" />
+                <tr v-for="item in filteredList">
+                    <td style="display:none;">{{"{{"}}item.id{{"}}"}}</td>
+                    <td>{{"{{"}}item.name{{"}}"}}</td>
+                    <td>{{"{{"}}item.jobtitle{{"}}"}}</td>
+                    <td>{{"{{"}}item.dob{{"}}"}}</td>
+                    <td>{{"{{"}}item.salary{{"}}"}}</td>
+                    <td>
+                        <div v-if="Editmode">
+                            <a v-on:click="OnEdit(item.id)" href="#">Edit</a>
+                            <a v-on:click="OnDelete(item.id)" href="#">Delete</a>
+                        </div>
+                        <div v-if="updatemode"><a href="#">update</a> <a href="#">Cancel</a> </div>
+                    </td>
+                </tr>
+            </table>
+            <br />
+            <div class="div_Master">
+                <input class="form-control" type="text" disabled placeholder="Id" v-model="id">
+                <input class="form-control" type="text" placeholder="Name" v-model="name">
+                <input class="form-control" type="text" placeholder="Salary" v-model="salary">
+                <select class="form-control" v-model="jobtitle">
+                    <option value="Select">Select</option>
+                    <option value="Admin">Admin</option>
+                    <option value="Member">Member</option>
+                </select>
+            </div>
+            <button type="button" class="btn btn-circle-bottom" v-on:click="btnSubmit()">{{"{{"}}btnMode{{"}}"}}
+            </button>
+        </div>
+    </form>
+</body>
+
+</html>
